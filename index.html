@@ -1,0 +1,152 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vaccine Supply Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { max-width: 600px; margin: auto; }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; margin-bottom: 5px; }
+    .input-group input { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { padding: 10px 20px; background-color: #4CAF50; color: #fff; border: none; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+    .result { font-weight: bold; margin-top: 10px; }
+    .note { font-style: italic; color: #555; }
+    hr { margin-top: 20px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Vaccine Supply Calculator</h1>
+
+  <!-- Section for AMC Calculation -->
+  <h2>Calculate Average Monthly Consumption (AMC)</h2>
+  <p class="note">Enter vaccine usage for the past 3 months to calculate the Average Monthly Consumption (AMC).</p>
+  <div class="input-group">
+    <label for="month1">Month 1 Usage</label>
+    <input type="number" id="month1" placeholder="Enter usage for month 1">
+  </div>
+  <div class="input-group">
+    <label for="month2">Month 2 Usage</label>
+    <input type="number" id="month2" placeholder="Enter usage for month 2">
+  </div>
+  <div class="input-group">
+    <label for="month3">Month 3 Usage</label>
+    <input type="number" id="month3" placeholder="Enter usage for month 3">
+  </div>
+  <button onclick="calculateAMC()">Calculate AMC</button>
+  <div id="amcResult" class="result"></div>
+
+  <!-- Section for Vaccine Quantity Calculation -->
+  <hr>
+  <h2>Vaccine Quantity to Request</h2>
+  <p class="note">Formula: Quantity to request = (AMC x 2) - Closing Balance.</p>
+  <div class="input-group">
+    <label for="closingBalance">Closing Balance (Current Stock)</label>
+    <input type="number" id="closingBalance" placeholder="Enter closing balance">
+  </div>
+  <button onclick="calculateVaccineRequest()">Calculate Vaccine Quantity</button>
+  <div id="vaccineResult" class="result"></div>
+
+  <!-- Section for Syringe Quantity Calculation -->
+  <hr>
+  <h2>Auto-Disposable Syringes Quantity</h2>
+  <p class="note">Formula: Quantity to request = Number of vials requested x dose preparation per vial.</p>
+  <div class="input-group">
+    <label for="vials">Number of Vials Requested</label>
+    <input type="number" id="vials" placeholder="Enter number of vials">
+  </div>
+  <div class="input-group">
+    <label for="dosePerVial">Dose Preparation per Vial</label>
+    <input type="number" id="dosePerVial" placeholder="Enter dose preparation per vial">
+  </div>
+  <button onclick="calculateSyringes()">Calculate Syringe Quantity</button>
+  <div id="syringeResult" class="result"></div>
+
+  <!-- Section for Mixing Syringes Calculation -->
+  <hr>
+  <h2>Mixing Syringes Quantity</h2>
+  <p class="note">Formula: Quantity to request = Number of vials requested.</p>
+  <button onclick="calculateMixingSyringes()">Calculate Mixing Syringe Quantity</button>
+  <div id="mixingSyringeResult" class="result"></div>
+
+  <!-- Section for Diluents Calculation -->
+  <hr>
+  <h2>Diluents Quantity</h2>
+  <p class="note">Formula: Quantity to request = Number of vials requested.</p>
+  <button onclick="calculateDiluents()">Calculate Diluents Quantity</button>
+  <div id="diluentsResult" class="result"></div>
+
+  <!-- Section for Droppers Calculation -->
+  <hr>
+  <h2>Droppers Quantity (for bOPV)</h2>
+  <p class="note">Formula: Quantity to request = Number of vials requested.</p>
+  <button onclick="calculateDroppers()">Calculate Droppers Quantity</button>
+  <div id="droppersResult" class="result"></div>
+
+  <!-- Section for Safety Boxes Calculation -->
+  <hr>
+  <h2>Safety Boxes Quantity</h2>
+  <p class="note">Formula: Quantity to request = Total quantity of syringes requested / 100.</p>
+  <button onclick="calculateSafetyBoxes()">Calculate Safety Boxes Quantity</button>
+  <div id="safetyBoxResult" class="result"></div>
+</div>
+
+<script>
+  // Calculate AMC
+  function calculateAMC() {
+    const month1 = parseFloat(document.getElementById('month1').value);
+    const month2 = parseFloat(document.getElementById('month2').value);
+    const month3 = parseFloat(document.getElementById('month3').value);
+    const totalUsage = month1 + month2 + month3;
+    const amc = totalUsage / 3;
+    document.getElementById('amcResult').innerText = `Calculated AMC: ${amc.toFixed(2)} doses per month`;
+  }
+
+  // Calculate Vaccine Quantity
+  function calculateVaccineRequest() {
+    const amc = parseFloat(document.getElementById('amcResult').innerText.split(': ')[1]);
+    const closingBalance = parseFloat(document.getElementById('closingBalance').value);
+    const vaccineQuantity = (amc * 2) - closingBalance;
+    document.getElementById('vaccineResult').innerText = `Vaccine Quantity to Request: ${vaccineQuantity.toFixed(2)}`;
+  }
+
+  // Calculate Syringe Quantity
+  function calculateSyringes() {
+    const vials = parseInt(document.getElementById('vials').value, 10);
+    const dosePerVial = parseInt(document.getElementById('dosePerVial').value, 10);
+    const syringeQuantity = vials * dosePerVial;
+    document.getElementById('syringeResult').innerText = `Syringe Quantity to Request: ${syringeQuantity}`;
+  }
+
+  // Calculate Mixing Syringes Quantity
+  function calculateMixingSyringes() {
+    const vials = parseInt(document.getElementById('vials').value, 10);
+    document.getElementById('mixingSyringeResult').innerText = `Mixing Syringe Quantity to Request: ${vials}`;
+  }
+
+  // Calculate Diluents Quantity
+  function calculateDiluents() {
+    const vials = parseInt(document.getElementById('vials').value, 10);
+    document.getElementById('diluentsResult').innerText = `Diluents Quantity to Request: ${vials}`;
+  }
+
+  // Calculate Droppers Quantity
+  function calculateDroppers() {
+    const vials = parseInt(document.getElementById('vials').value, 10);
+    document.getElementById('droppersResult').innerText = `Droppers Quantity to Request: ${vials}`;
+  }
+
+  // Calculate Safety Boxes Quantity
+  function calculateSafetyBoxes() {
+    const syringes = parseInt(document.getElementById('syringeResult').innerText.split(': ')[1], 10);
+    const safetyBoxes = syringes / 100;
+    document.getElementById('safetyBoxResult').innerText = `Safety Boxes Quantity to Request: ${Math.ceil(safetyBoxes)}`;
+  }
+</script>
+
+</body>
+</html>
